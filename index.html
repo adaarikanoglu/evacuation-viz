@@ -9,8 +9,9 @@
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; padding: 24px; }
   h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
-  .subtitle { font-size: 13px; color: #666; margin-bottom: 24px; }
-  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 20px; }
+  .section-title { font-size: 15px; font-weight: 600; margin: 28px 0 12px; padding-bottom: 6px; border-bottom: 1.5px solid #e0e0e0; }
+  .tabs { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px; }
   .tab-btn { padding: 8px 18px; font-size: 13px; cursor: pointer; border: 1px solid #ddd; background: #fff; color: #555; border-radius: 20px; transition: all 0.15s; }
   .tab-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; font-weight: 500; }
   .tab-btn:hover:not(.active) { background: #f0f0f0; }
@@ -20,6 +21,7 @@
   .legend span { display: flex; align-items: center; gap: 5px; }
   .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
   .chart-wrap { position: relative; width: 100%; max-width: 420px; height: 300px; margin: 0 auto; }
+  .chart-wrap-bar { position: relative; width: 100%; max-width: 500px; height: 320px; margin: 0 auto; }
   .info-box { border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px 20px; margin-top: 16px; min-height: 80px; background: #fff; }
   .info-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
   .hint { font-size: 12px; color: #999; }
@@ -32,13 +34,15 @@
   .stat-label { font-size: 11px; color: #888; margin-bottom: 4px; }
   .stat-val { font-size: 22px; font-weight: 600; }
   .stat-sub { font-size: 11px; color: #aaa; }
+  hr.divider { border: none; border-top: 1.5px solid #e0e0e0; margin: 32px 0; }
 </style>
 </head>
 <body>
 
-<h1>Evacuation Behavior Research — Interactive Overview</h1>
-<p class="subtitle">172 studies on factors influencing evacuation decisions. Click any chart slice to see the papers.</p>
+<h1>Evacuation Research — Interactive Overview</h1>
+<p class="subtitle">Click any chart element to explore the papers in that category. Blue tags = newly added papers.</p>
 
+<div class="section-title">Human Behavior Studies (172 papers)</div>
 <div class="stats">
   <div class="stat-card"><div class="stat-label">Total studies</div><div class="stat-val">172</div><div class="stat-sub">reviewed</div></div>
   <div class="stat-card"><div class="stat-label">New papers</div><div class="stat-val">85</div><div class="stat-sub">recently added</div></div>
@@ -47,12 +51,12 @@
 </div>
 
 <div class="tabs">
-  <button class="tab-btn active" onclick="showTab('countries', this)">Countries</button>
-  <button class="tab-btn" onclick="showTab('disasters', this)">Disaster types</button>
-  <button class="tab-btn" onclick="showTab('factors', this)">Factors</button>
+  <button class="tab-btn active" onclick="showTab('countries', this, 'hb')">Countries</button>
+  <button class="tab-btn" onclick="showTab('disasters', this, 'hb')">Disaster types</button>
+  <button class="tab-btn" onclick="showTab('factors', this, 'hb')">Factors</button>
 </div>
 
-<div id="tab-countries" class="panel active">
+<div id="hb-tab-countries" class="panel active">
   <div class="legend">
     <span><span class="legend-dot" style="background:#378ADD"></span>USA 61%</span>
     <span><span class="legend-dot" style="background:#888780"></span>General 19%</span>
@@ -64,7 +68,7 @@
   <div class="info-box" id="info-countries"><div class="hint">Click a slice to see papers in that category.</div></div>
 </div>
 
-<div id="tab-disasters" class="panel">
+<div id="hb-tab-disasters" class="panel">
   <div class="legend">
     <span><span class="legend-dot" style="background:#378ADD"></span>Hurricane 47%</span>
     <span><span class="legend-dot" style="background:#888780"></span>General 16%</span>
@@ -78,7 +82,7 @@
   <div class="info-box" id="info-disasters"><div class="hint">Click a slice to see papers in that category.</div></div>
 </div>
 
-<div id="tab-factors" class="panel">
+<div id="hb-tab-factors" class="panel">
   <div class="legend">
     <span><span class="legend-dot" style="background:#378ADD"></span>Demog. 15%</span>
     <span><span class="legend-dot" style="background:#1D9E75"></span>EC 13%</span>
@@ -90,6 +94,38 @@
   </div>
   <div class="chart-wrap"><canvas id="chartFactors"></canvas></div>
   <div class="info-box" id="info-factors"><div class="hint">Click a slice to see papers in that category.</div></div>
+</div>
+
+<hr class="divider">
+
+<div class="section-title">Simulation-Optimization Studies (69 papers)</div>
+<div class="stats">
+  <div class="stat-card"><div class="stat-label">Total studies</div><div class="stat-val">69</div><div class="stat-sub">reviewed</div></div>
+  <div class="stat-card"><div class="stat-label">ISO</div><div class="stat-val">44</div><div class="stat-sub">64%</div></div>
+  <div class="stat-card"><div class="stat-label">IOS</div><div class="stat-val">14</div><div class="stat-sub">20%</div></div>
+  <div class="stat-card"><div class="stat-label">2016–2025</div><div class="stat-val">34</div><div class="stat-sub">most recent period</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('somethod', this, 'so')">S-O Methods</button>
+  <button class="tab-btn" onclick="showTab('soyear', this, 'so')">Yearly Distribution</button>
+</div>
+
+<div id="so-tab-somethod" class="panel active">
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#2b5ea7"></span>ISO 64%</span>
+    <span><span class="legend-dot" style="background:#e07b39"></span>IOS 20%</span>
+    <span><span class="legend-dot" style="background:#888780"></span>Review 12%</span>
+    <span><span class="legend-dot" style="background:#7b6fd4"></span>SSO 3%</span>
+    <span><span class="legend-dot" style="background:#c94f7c"></span>ASO 1%</span>
+  </div>
+  <div class="chart-wrap"><canvas id="chartSOMethod"></canvas></div>
+  <div class="info-box" id="info-somethod"><div class="hint">Click a slice to see papers in that category.</div></div>
+</div>
+
+<div id="so-tab-soyear" class="panel">
+  <div class="chart-wrap-bar"><canvas id="chartSOYear"></canvas></div>
+  <div class="info-box" id="info-soyear"><div class="hint">Click a bar to see papers from that period.</div></div>
 </div>
 
 <script>
@@ -111,7 +147,11 @@ const newPapers = new Set([
   'chen2022evacuation','demiroluk2016feature','elejalde2025use','wolshon2005review','roy2021modeling',
   'syamsidik2013tsunami','sadri2017role','greer2023household','reyes2025novel','hou2020statistical',
   'mclennan2019should','alawadi2020determinants','rashid2025understanding','ricchetti2013social',
-  'wu2024evacuate','adjei2022effects'
+  'wu2024evacuate','adjei2022effects',
+  'chang2024shelter','lopez2021cellevac','fu2014optimization','huang2016simultaneous','ma2013multi',
+  'chebika2025simulating','yazici2008evacuation','romano2025behavioral','even2015convergent',
+  'nagarajan2021behavioural','takabatake2025reinforcement','cao2024human','hafiz2021large',
+  'hasan2021large','islam2022simulation','huertas2020evacuation','zambrano2020time','kim2017evacuation'
 ]);
 
 const countryData = {
@@ -141,16 +181,30 @@ const factorData = {
   'PE': ['baker1991hurricane','dash2007evacuation','perry1979incentives','dow2000public','lazo2015factors','wolshon2002planning','ersing2020geophysical','jumadi2018modelling','lindell2011logistics','yang2016modeling','kim2015confidence','ayeb2019will','walch2018evacuation','kinateder2015risk','golshani2019evacuation','demuth2016effects','wu2012logistics','huang2016leaves','grajdura2021awareness','hasan2012transferability','nadimi2025earthquake','ling2021role','sadri2014analysis','mahittikul2024examining','robinson2010route','bian2019modeling','rambha2021modeling','wong2020revealed','hasan2011behavioral','kuligowski2022modeling','mapa2026analyzing','dixit2012modeling','sun2024predicting','hall2017awareness','wambura2025wildfire','elhami2023review','alawadi2022determinants','chen2021tsunami','toledo2018analysis','wang2021incorporating','chen2022evacuation','demiroluk2016feature','wolshon2005review','syamsidik2013tsunami','greer2023household','mclennan2019should','alawadi2020determinants','bernardini2016towards']
 };
 
+const soMethodData = {
+  'ISO': ['gan2016integration','takabatake2017simulated','yuan2017traffic','zhang2009agent','afshar2008heuristic','balakrishna2008simulation','chang2016optimizing','chang2018evaluation','chang2017arebic','chavhan2019transport','nakanishi2020simulating','wang2023simulation','joo2013agent','chen2006agent','shi2009agent','cova2002microsimulation','lu2005capacity','han2006global','hsu2013aggregate','chiu2007modeling','zou2005simulation','sfeir2018simulation','li2022multiagent','rivers2014using','song2013simulation','liu2023optimal','kimms2011extended','ma2013study','lopez2021cellevac','huang2016simultaneous','chebika2025simulating','yazici2008evacuation','romano2025behavioral','even2015convergent','nagarajan2021behavioural','takabatake2025reinforcement','cao2024human','hafiz2021large','hasan2021large','islam2022simulation','huertas2020evacuation','zambrano2020time','kim2017evacuation','liu2016agent'],
+  'IOS': ['swamy2017hurricane','abdelgawad2010managing','alahi2019optimization','cabrera2022pedestrian','zong2014conflict','cheng2008modified','bo2007multi','wei2012research','zhang2024coupled','zheng2021simulation','xu2022intelligent','chang2024shelter','fu2014optimization','ma2013multi'],
+  'Review': ['islam2023transportation','amideo2019optimising','murray2013evacuation','crainic2018simulation','farahani2020mass','amaran2016simulation','tekin2004simulation','figueira2014hybrid'],
+  'SSO': ['lahmar2006dynamic','maassen2012optimizing'],
+  'ASO': ['liu2016agent']
+};
+
+const soYearData = {
+  '2002-2009': ['cova2002microsimulation','lu2005capacity','han2006global','chen2006agent','lahmar2006dynamic','chiu2007modeling','bo2007multi','zhang2009agent','afshar2008heuristic','balakrishna2008simulation','cheng2008modified','shi2009agent','zou2005simulation','tekin2004simulation','yazici2008evacuation'],
+  '2009-2016': ['abdelgawad2010managing','kimms2011extended','maassen2012optimizing','hsu2013aggregate','joo2013agent','murray2013evacuation','ma2013study','ma2013multi','rivers2014using','zong2014conflict','figueira2014hybrid','fu2014optimization','wei2012research','even2015convergent','liu2016agent','gan2016integration','chang2016optimizing','huang2016simultaneous','amaran2016simulation'],
+  '2016-2025': ['takabatake2017simulated','yuan2017traffic','chang2017arebic','swamy2017hurricane','kim2017evacuation','chang2018evaluation','chavhan2019transport','alahi2019optimization','amideo2019optimising','nakanishi2020simulating','farahani2020mass','islam2023transportation','crainic2018simulation','song2013simulation','cabrera2022pedestrian','sfeir2018simulation','li2022multiagent','xu2022intelligent','zheng2021simulation','lopez2021cellevac','liu2023optimal','wang2023simulation','zhang2024coupled','chebika2025simulating','romano2025behavioral','nagarajan2021behavioural','takabatake2025reinforcement','cao2024human','hafiz2021large','hasan2021large','islam2022simulation','huertas2020evacuation','zambrano2020time','chang2024shelter']
+};
+
 function renderTags(papers) {
   return '<div class="tags">' + papers.map(p =>
     `<span class="tag ${newPapers.has(p) ? 'new' : ''}">${p}</span>`
   ).join('') + '</div><p class="legend-note">Blue = newly added papers</p>';
 }
 
-function showTab(tab, btn) {
-  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-  document.getElementById('tab-' + tab).classList.add('active');
+function showTab(tab, btn, section) {
+  document.querySelectorAll(`[id^="${section}-tab-"]`).forEach(p => p.classList.remove('active'));
+  btn.parentElement.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(`${section}-tab-${tab}`).classList.add('active');
   btn.classList.add('active');
 }
 
@@ -159,45 +213,74 @@ function makeDonut(id, labels, data, colors, infoId, dataMap) {
   if (!ctx) return;
   const chart = new Chart(ctx, {
     type: 'doughnut',
+    data: { labels, datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 10 }] },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: { legend: { display: false }, tooltip: { callbacks: { label: c => ` ${c.label}: ${c.parsed}%` } } },
+      onClick(evt) {
+        const pts = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+        if (!pts.length) return;
+        const label = labels[pts[0].index];
+        const papers = dataMap[label] || [];
+        document.getElementById(infoId).innerHTML = `<div class="info-title">${label} — ${papers.length} papers</div>${renderTags(papers)}`;
+      }
+    }
+  });
+}
+
+function makeBar(id, labels, data, colors, infoId, dataMap) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const chart = new Chart(ctx, {
+    type: 'bar',
     data: {
       labels,
-      datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 10 }]
+      datasets: [
+        { data, backgroundColor: colors, borderRadius: 4, borderSkipped: false },
+        { type: 'line', data, borderColor: '#333', borderWidth: 1.5, borderDash: [5,4], pointRadius: 0, fill: false, tension: 0 }
+      ]
     },
     options: {
       responsive: true, maintainAspectRatio: false,
-      plugins: {
-        legend: { display: false },
-        tooltip: { callbacks: { label: c => ` ${c.label}: ${c.parsed}%` } }
+      plugins: { legend: { display: false } },
+      scales: {
+        x: { grid: { display: false }, ticks: { font: { size: 12 } } },
+        y: { grid: { color: '#eee' }, ticks: { font: { size: 11 } }, title: { display: true, text: 'Count', font: { size: 12 } } }
       },
       onClick(evt) {
         const pts = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
         if (!pts.length) return;
         const label = labels[pts[0].index];
         const papers = dataMap[label] || [];
-        document.getElementById(infoId).innerHTML =
-          `<div class="info-title">${label} — ${papers.length} papers</div>${renderTags(papers)}`;
+        document.getElementById(infoId).innerHTML = `<div class="info-title">${label} — ${papers.length} papers</div>${renderTags(papers)}`;
       }
-    }
+    },
+    plugins: [{
+      afterDatasetsDraw(chart) {
+        const ctx2 = chart.ctx;
+        chart.data.datasets[0].data.forEach((val, i) => {
+          const meta = chart.getDatasetMeta(0);
+          const bar = meta.data[i];
+          ctx2.fillStyle = '#333';
+          ctx2.font = 'bold 12px sans-serif';
+          ctx2.textAlign = 'center';
+          ctx2.fillText(val, bar.x, bar.y - 6);
+        });
+      }
+    }]
   });
 }
 
-makeDonut('chartCountries',
-  ['USA','General','Japan','China','Others'],
-  [61,19,6,3,11],
-  ['#378ADD','#888780','#1D9E75','#D85A30','#D4537E'],
-  'info-countries', countryData);
-
-makeDonut('chartDisasters',
-  ['Hurricane','General','Wildfire/Fire','Earthquake','Tsunami','Flood','Others'],
-  [47,16,12,6,6,5,8],
-  ['#378ADD','#888780','#EF9F27','#1D9E75','#7F77DD','#D4537E','#D85A30'],
-  'info-disasters', disasterData);
-
-makeDonut('chartFactors',
-  ['Demog.','EC','PPC','FC','SC','PE','Others'],
-  [15,13,13,11,11,9,28],
-  ['#378ADD','#1D9E75','#7F77DD','#EF9F27','#D4537E','#D85A30','#888780'],
-  'info-factors', factorData);
+makeDonut('chartCountries', ['USA','General','Japan','China','Others'], [61,19,6,3,11],
+  ['#378ADD','#888780','#1D9E75','#D85A30','#D4537E'], 'info-countries', countryData);
+makeDonut('chartDisasters', ['Hurricane','General','Wildfire/Fire','Earthquake','Tsunami','Flood','Others'], [47,16,12,6,6,5,8],
+  ['#378ADD','#888780','#EF9F27','#1D9E75','#7F77DD','#D4537E','#D85A30'], 'info-disasters', disasterData);
+makeDonut('chartFactors', ['Demog.','EC','PPC','FC','SC','PE','Others'], [15,13,13,11,11,9,28],
+  ['#378ADD','#1D9E75','#7F77DD','#EF9F27','#D4537E','#D85A30','#888780'], 'info-factors', factorData);
+makeDonut('chartSOMethod', ['ISO','IOS','Review','SSO','ASO'], [64,20,12,3,1],
+  ['#2b5ea7','#e07b39','#888780','#7b6fd4','#c94f7c'], 'info-somethod', soMethodData);
+makeBar('chartSOYear', ['2002-2009','2009-2016','2016-2025'], [15,20,34],
+  ['#c0392b','#e8960a','#666666'], 'info-soyear', soYearData);
 </script>
 </body>
 </html>
