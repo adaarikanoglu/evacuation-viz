@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Evacuation Behavior Research — Interactive Overview</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js"></script>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f8f8f6; color: #1a1a1a; padding: 24px; }
+  h1 { font-size: 20px; font-weight: 600; margin-bottom: 4px; }
+  .subtitle { font-size: 13px; color: #666; margin-bottom: 24px; }
+  .tabs { display: flex; gap: 8px; margin-bottom: 20px; flex-wrap: wrap; }
+  .tab-btn { padding: 8px 18px; font-size: 13px; cursor: pointer; border: 1px solid #ddd; background: #fff; color: #555; border-radius: 20px; transition: all 0.15s; }
+  .tab-btn.active { background: #1a1a1a; color: #fff; border-color: #1a1a1a; font-weight: 500; }
+  .tab-btn:hover:not(.active) { background: #f0f0f0; }
+  .panel { display: none; }
+  .panel.active { display: block; }
+  .legend { display: flex; gap: 12px; flex-wrap: wrap; margin-bottom: 16px; font-size: 12px; color: #555; }
+  .legend span { display: flex; align-items: center; gap: 5px; }
+  .legend-dot { width: 10px; height: 10px; border-radius: 2px; display: inline-block; }
+  .chart-wrap { position: relative; width: 100%; max-width: 420px; height: 300px; margin: 0 auto; }
+  .info-box { border: 1px solid #e0e0e0; border-radius: 12px; padding: 16px 20px; margin-top: 16px; min-height: 80px; background: #fff; }
+  .info-title { font-size: 14px; font-weight: 600; margin-bottom: 10px; }
+  .hint { font-size: 12px; color: #999; }
+  .tags { margin-top: 6px; }
+  .tag { display: inline-block; font-size: 11px; padding: 3px 9px; border-radius: 20px; background: #f0f0f0; color: #555; border: 1px solid #e0e0e0; margin: 2px; }
+  .tag.new { background: #E6F1FB; color: #0C447C; border-color: #B5D4F4; }
+  .legend-note { font-size: 11px; color: #999; margin-top: 10px; }
+  .stats { display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap; }
+  .stat-card { background: #fff; border: 1px solid #e8e8e8; border-radius: 10px; padding: 12px 18px; flex: 1; min-width: 120px; }
+  .stat-label { font-size: 11px; color: #888; margin-bottom: 4px; }
+  .stat-val { font-size: 22px; font-weight: 600; }
+  .stat-sub { font-size: 11px; color: #aaa; }
+</style>
+</head>
+<body>
+
+<h1>Evacuation Behavior Research — Interactive Overview</h1>
+<p class="subtitle">172 studies on factors influencing evacuation decisions. Click any chart slice to see the papers.</p>
+
+<div class="stats">
+  <div class="stat-card"><div class="stat-label">Total studies</div><div class="stat-val">172</div><div class="stat-sub">reviewed</div></div>
+  <div class="stat-card"><div class="stat-label">New papers</div><div class="stat-val">85</div><div class="stat-sub">recently added</div></div>
+  <div class="stat-card"><div class="stat-label">Countries</div><div class="stat-val">15+</div><div class="stat-sub">represented</div></div>
+  <div class="stat-card"><div class="stat-label">Disaster types</div><div class="stat-val">12</div><div class="stat-sub">covered</div></div>
+</div>
+
+<div class="tabs">
+  <button class="tab-btn active" onclick="showTab('countries', this)">Countries</button>
+  <button class="tab-btn" onclick="showTab('disasters', this)">Disaster types</button>
+  <button class="tab-btn" onclick="showTab('factors', this)">Factors</button>
+</div>
+
+<div id="tab-countries" class="panel active">
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#378ADD"></span>USA 61%</span>
+    <span><span class="legend-dot" style="background:#888780"></span>General 19%</span>
+    <span><span class="legend-dot" style="background:#1D9E75"></span>Japan 6%</span>
+    <span><span class="legend-dot" style="background:#D85A30"></span>China 3%</span>
+    <span><span class="legend-dot" style="background:#D4537E"></span>Others 11%</span>
+  </div>
+  <div class="chart-wrap"><canvas id="chartCountries"></canvas></div>
+  <div class="info-box" id="info-countries"><div class="hint">Click a slice to see papers in that category.</div></div>
+</div>
+
+<div id="tab-disasters" class="panel">
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#378ADD"></span>Hurricane 47%</span>
+    <span><span class="legend-dot" style="background:#888780"></span>General 16%</span>
+    <span><span class="legend-dot" style="background:#EF9F27"></span>Wildfire/Fire 12%</span>
+    <span><span class="legend-dot" style="background:#1D9E75"></span>Earthquake 6%</span>
+    <span><span class="legend-dot" style="background:#7F77DD"></span>Tsunami 6%</span>
+    <span><span class="legend-dot" style="background:#D4537E"></span>Flood 5%</span>
+    <span><span class="legend-dot" style="background:#D85A30"></span>Others 8%</span>
+  </div>
+  <div class="chart-wrap"><canvas id="chartDisasters"></canvas></div>
+  <div class="info-box" id="info-disasters"><div class="hint">Click a slice to see papers in that category.</div></div>
+</div>
+
+<div id="tab-factors" class="panel">
+  <div class="legend">
+    <span><span class="legend-dot" style="background:#378ADD"></span>Demog. 15%</span>
+    <span><span class="legend-dot" style="background:#1D9E75"></span>EC 13%</span>
+    <span><span class="legend-dot" style="background:#7F77DD"></span>PPC 13%</span>
+    <span><span class="legend-dot" style="background:#EF9F27"></span>FC 11%</span>
+    <span><span class="legend-dot" style="background:#D4537E"></span>SC 11%</span>
+    <span><span class="legend-dot" style="background:#D85A30"></span>PE 9%</span>
+    <span><span class="legend-dot" style="background:#888780"></span>Others 28%</span>
+  </div>
+  <div class="chart-wrap"><canvas id="chartFactors"></canvas></div>
+  <div class="info-box" id="info-factors"><div class="hint">Click a slice to see papers in that category.</div></div>
+</div>
+
+<script>
+const newPapers = new Set([
+  'grajdura2021awareness','cheng2013development','grajdura2025understanding','hasan2012transferability',
+  'nadimi2025earthquake','troncoso2016accounting','ling2021role','bian2022household','anyidoho2022prediction',
+  'huang2017risk','de2013fuzzy','sadri2014analysis','lambert2013understanding','muthohar2020analysing',
+  'd2024behavioural','chen2024data','dixit2012modeling','intini2019traffic','iwai2025spatiotemporal',
+  'zhang2024modeling','mahittikul2024examining','robinson2010route','xu2016hurricane','bian2019modeling',
+  'bian2023modeling','rambha2021modeling','raei2025data','wong2020revealed','morooka2017study',
+  'jin2025exploring','jiang2021social','li2022drivers','lim2019flood','hasan2011behavioral',
+  'sadri2017modeling','kuligowski2022modeling','mapa2026analyzing','urata2021dynamics','ahmed2020modeling',
+  'an2015integrating','makinoshima2024milling','diaz2023impacts','wong2023understanding','ma2025understanding',
+  'anyidoho2023machine','guan2021behaviorally','bian2022impact','sarwar2018statistical','golshani2020modeling',
+  'chang2021taking','urata2018people','sun2024predicting','hall2017awareness','bernardini2016towards',
+  'mozumder2008investigating','wambura2025wildfire','tsekeni2025spatiotemporal','elhami2023review',
+  'alawadi2022determinants','cheng2011dynamic','chen2021tsunami','toledo2018analysis','koshute2013evaluation',
+  'wang2020effect','wang2021incorporating','chen2020evaluation','xu2022highway','anonymous2023smartphone',
+  'chen2022evacuation','demiroluk2016feature','elejalde2025use','wolshon2005review','roy2021modeling',
+  'syamsidik2013tsunami','sadri2017role','greer2023household','reyes2025novel','hou2020statistical',
+  'mclennan2019should','alawadi2020determinants','rashid2025understanding','ricchetti2013social',
+  'wu2024evacuate','adjei2022effects'
+]);
+
+const countryData = {
+  'USA': ['baker1991hurricane','dash2007evacuation','dow2000public','perry1991effects','dombroski2006predicting','lindell2005household','sadri2014evacuate','lindell2007critical','lazo2015factors','wolshon2002planning','ersing2020geophysical','tinsley2012near','noltenius2008capturing','wilson2008geographic','chakraborty2005population','la2023climate','pham2020evacuation','fu2007modeling','lindell2011logistics','johnson1986modelling','lu2014agent','baker1995public','whitehead2000heading','cheng2008destination','yang2016modeling','digrande2019pilot','horney2010individual','riad1999predicting','kim2015confidence','blendon2007public','bateman2002gender','elliott2006race','diwanji2020understanding','xu2022intelligent','ducy2021psychological','drabek1971disaster','meyer2014dynamics','czajkowski2011time','regnier2008public','yabe2020effects','harris2022agent','lindell2000household','kinateder2015risk','demuth2016effects','wu2012logistics','huang2016leaves','hunt2012pet','heath2001risk','liu2014uniting','liu2012analysis','muttarak2014education','islam2023transportation','grajdura2021awareness','cheng2013development','grajdura2025understanding','hasan2012transferability','ling2021role','bian2022household','anyidoho2022prediction','sadri2014analysis','lambert2013understanding','chen2024data','dixit2012modeling','zhang2024modeling','robinson2010route','xu2016hurricane','bian2019modeling','bian2023modeling','rambha2021modeling','wong2020revealed','jiang2021social','li2022drivers','hasan2011behavioral','sadri2017modeling','kuligowski2022modeling','mapa2026analyzing','ahmed2020modeling','diaz2023impacts','wong2023understanding','ma2025understanding','anyidoho2023machine','guan2021behaviorally','bian2022impact','sarwar2018statistical','golshani2020modeling','chang2021taking','sun2024predicting','mozumder2008investigating','tsekeni2025spatiotemporal','elhami2023review','alawadi2022determinants','cheng2011dynamic','chen2021tsunami','koshute2013evaluation','xu2022highway','chen2022evacuation','demiroluk2016feature','wolshon2005review','roy2021modeling','sadri2017role','greer2023household','alawadi2020determinants','rashid2025understanding','ricchetti2013social','wu2024evacuate','adjei2022effects'],
+  'General': ['perry1979incentives','perry2005disaster','mawson2005understanding','quarantelli1975panic','murray2004transportation','xie2023study','kinateder2015risk','fothergill1996gender','bolin1998gender','christensen2011effect','gist2013response','wang2021incorporating','li2017grouping','vorst2010evacuation','golshani2019evacuation','neumayer2007gendered','zhang2014dynamic','abdelgawad2010managing','de2013fuzzy','d2024behavioural','intini2019traffic','an2015integrating','wang2020effect','reyes2025novel','elhami2023review','mclennan2019should'],
+  'Japan': ['sakamoto2020implementation','nogami2022factors','cheng2015media','troncoso2016accounting','iwai2025spatiotemporal','morooka2017study','urata2021dynamics','makinoshima2024milling','urata2018people','anonymous2023smartphone'],
+  'China': ['hu2017integrated','huang2017risk','jin2025exploring','chen2020evaluation','hou2020statistical'],
+  'Others': ['stern1989evacuation','jumadi2018modelling','jang2022effects','ayeb2019will','walch2018evacuation','munro2017effect','jamshed2019assessing','nakanishi2019investigating','naeimi2019validating','nadimi2025earthquake','mahittikul2024examining','lim2019flood','raei2025data','hall2017awareness','bernardini2016towards','wambura2025wildfire','chen2022evacuation','elejalde2025use','syamsidik2013tsunami','muthohar2020analysing','toledo2018analysis']
+};
+
+const disasterData = {
+  'Hurricane': ['baker1991hurricane','dash2007evacuation','dow2000public','perry1991effects','lindell2005household','sadri2014evacuate','lindell2007critical','lazo2015factors','wolshon2002planning','ersing2020geophysical','tinsley2012near','noltenius2008capturing','wilson2008geographic','chakraborty2005population','la2023climate','pham2020evacuation','fu2007modeling','lindell2011logistics','baker1995public','whitehead2000heading','cheng2008destination','yang2016modeling','digrande2019pilot','horney2010individual','riad1999predicting','kim2015confidence','blendon2007public','bateman2002gender','elliott2006race','diwanji2020understanding','meyer2014dynamics','czajkowski2011time','regnier2008public','yabe2020effects','harris2022agent','demuth2016effects','huang2016leaves','islam2023transportation','cheng2013development','hasan2012transferability','ling2021role','bian2022household','anyidoho2022prediction','sadri2014analysis','chen2024data','dixit2012modeling','robinson2010route','xu2016hurricane','bian2019modeling','bian2023modeling','rambha2021modeling','jiang2021social','hasan2011behavioral','sadri2017modeling','kuligowski2022modeling','ahmed2020modeling','diaz2023impacts','anyidoho2023machine','guan2021behaviorally','bian2022impact','sarwar2018statistical','golshani2020modeling','chang2021taking','sun2024predicting','tsekeni2025spatiotemporal','elhami2023review','alawadi2022determinants','cheng2011dynamic','chen2021tsunami','koshute2013evaluation','wolshon2005review','roy2021modeling','sadri2017role','greer2023household','alawadi2020determinants','rashid2025understanding','ricchetti2013social','wu2024evacuate','adjei2022effects'],
+  'General': ['perry1979incentives','perry2005disaster','mawson2005understanding','quarantelli1975panic','murray2004transportation','xie2023study','kinateder2015risk','fothergill1996gender','bolin1998gender','christensen2011effect','gist2013response','wang2021incorporating','li2017grouping','vorst2010evacuation','golshani2019evacuation','neumayer2007gendered','zhang2014dynamic','abdelgawad2010managing','de2013fuzzy','d2024behavioural','an2015integrating','wang2020effect','reyes2025novel','golshani2020modeling','lambert2013understanding'],
+  'Wildfire/Fire': ['lu2014agent','xu2022intelligent','ducy2021psychological','grajdura2021awareness','grajdura2025understanding','intini2019traffic','wong2020revealed','kuligowski2022modeling','mapa2026analyzing','wong2023understanding','ma2025understanding','mozumder2008investigating','wambura2025wildfire','elhami2023review','xu2022highway','elejalde2025use','mclennan2019should','toledo2018analysis'],
+  'Earthquake': ['sakamoto2020implementation','lindell2000household','hu2017integrated','naeimi2019validating','nadimi2025earthquake','zhang2024modeling','bernardini2016towards','chen2020evaluation'],
+  'Tsunami': ['troncoso2016accounting','iwai2025spatiotemporal','mahittikul2024examining','makinoshima2024milling','urata2018people','anonymous2023smartphone','chen2022evacuation','hall2017awareness','syamsidik2013tsunami','chen2021tsunami'],
+  'Flood': ['dow2000public','heath2001risk','jamshed2019assessing','nakanishi2019investigating','munro2017effect','drabek1971disaster','ayeb2019will','morooka2017study','jin2025exploring','lim2019flood'],
+  'Others': ['stern1989evacuation','jumadi2018modelling','jang2022effects','walch2018evacuation','cheng2015media','liu2014uniting','liu2012analysis','nogami2022factors','johnson1986modelling','urata2021dynamics','li2022drivers','demiroluk2016feature','hou2020statistical','greer2023household']
+};
+
+const factorData = {
+  'Demog.': ['baker1991hurricane','dash2007evacuation','dombroski2006predicting','lindell2005household','lazo2015factors','ersing2020geophysical','lindell2011logistics','chakraborty2005population','pham2020evacuation','lu2014agent','baker1995public','whitehead2000heading','cheng2008destination','yang2016modeling','digrande2019pilot','horney2010individual','kim2015confidence','bolin1998gender','bateman2002gender','fothergill1996gender','cheng2015media','diwanji2020understanding','ducy2021psychological','munro2017effect','meyer2014dynamics','yabe2020effects','golshani2019evacuation','demuth2016effects','hunt2012pet','heath2001risk','liu2014uniting','liu2012analysis','nakanishi2019investigating','neumayer2007gendered','muttarak2014education','naeimi2019validating','islam2023transportation','cheng2013development','grajdura2025understanding','hasan2012transferability','nadimi2025earthquake','ling2021role','anyidoho2022prediction','chen2024data','intini2019traffic','iwai2025spatiotemporal','mahittikul2024examining','robinson2010route','xu2016hurricane','bian2019modeling','rambha2021modeling','raei2025data','jin2025exploring','li2022drivers','lim2019flood','hasan2011behavioral','kuligowski2022modeling','urata2021dynamics','ahmed2020modeling','diaz2023impacts','ma2025understanding','sarwar2018statistical','golshani2020modeling','chang2021taking','urata2018people','sun2024predicting','wambura2025wildfire','elhami2023review','cheng2011dynamic','toledo2018analysis','wang2021incorporating','chen2020evaluation','chen2022evacuation','demiroluk2016feature','wolshon2005review','greer2023household','reyes2025novel','alawadi2020determinants','ricchetti2013social','bernardini2016towards'],
+  'EC': ['perry1991effects','dombroski2006predicting','lindell2005household','sadri2014evacuate','wolshon2002planning','ersing2020geophysical','tinsley2012near','noltenius2008capturing','wilson2008geographic','chakraborty2005population','la2023climate','pham2020evacuation','sakamoto2020implementation','fu2007modeling','lu2014agent','whitehead2000heading','cheng2008destination','yang2016modeling','digrande2019pilot','horney2010individual','stern1989evacuation','dow2000public','liu2012analysis','golshani2019evacuation','huang2016leaves','troncoso2016accounting','iwai2025spatiotemporal','zhang2024modeling','lambert2013understanding','de2013fuzzy','d2024behavioural','dixit2012modeling','robinson2010route','xu2016hurricane','bian2019modeling','rambha2021modeling','morooka2017study','lim2019flood','hasan2011behavioral','kuligowski2022modeling','mapa2026analyzing','urata2021dynamics','makinoshima2024milling','diaz2023impacts','ma2025understanding','anyidoho2023machine','guan2021behaviorally','golshani2020modeling','chang2021taking','urata2018people','sun2024predicting','hall2017awareness','bernardini2016towards','mozumder2008investigating','tsekeni2025spatiotemporal','elhami2023review','cheng2011dynamic','wang2020effect','wang2021incorporating','chen2020evaluation','xu2022highway','chen2022evacuation','wu2024evacuate','nadimi2025earthquake','li2022drivers'],
+  'PPC': ['quarantelli1975panic','dombroski2006predicting','stern1989evacuation','riad1999predicting','baker1995public','yang2016modeling','fothergill1996gender','elliott2006race','christensen2011effect','xu2022intelligent','drabek1971disaster','gist2013response','meyer2014dynamics','czajkowski2011time','wang2021incorporating','li2017grouping','vorst2010evacuation','regnier2008public','harris2022agent','lindell2000household','kinateder2015risk','demuth2016effects','jamshed2019assessing','grajdura2025understanding','hasan2012transferability','bian2022household','huang2017risk','de2013fuzzy','d2024behavioural','chen2024data','dixit2012modeling','zhang2024modeling','mahittikul2024examining','bian2023modeling','wong2020revealed','morooka2017study','li2022drivers','hasan2011behavioral','sadri2017modeling','kuligowski2022modeling','urata2021dynamics','an2015integrating','diaz2023impacts','guan2021behaviorally','urata2018people','sun2024predicting','hall2017awareness','bernardini2016towards','wambura2025wildfire','elhami2023review','alawadi2022determinants','chen2021tsunami','wang2020effect','wang2021incorporating','demiroluk2016feature','wolshon2005review','roy2021modeling','syamsidik2013tsunami','greer2023household','reyes2025novel','hou2020statistical','mclennan2019should','wu2024evacuate','adjei2022effects'],
+  'FC': ['baker1991hurricane','dash2007evacuation','perry1979incentives','dow2000public','perry2005disaster','mawson2005understanding','stern1989evacuation','dombroski2006predicting','lindell2005household','sadri2014evacuate','lindell2007critical','lazo2015factors','wolshon2002planning','chakraborty2005population','pham2020evacuation','jumadi2018modelling','nogami2022factors','jang2022effects','lindell2011logistics','johnson1986modelling','whitehead2000heading','cheng2008destination','horney2010individual','kim2015confidence','blendon2007public','bolin1998gender','bateman2002gender','ducy2021psychological','drabek1971disaster','meyer2014dynamics','czajkowski2011time','demuth2016effects','wu2012logistics','huang2016leaves','jamshed2019assessing','hunt2012pet','heath2001risk','liu2014uniting','liu2012analysis','nakanishi2019investigating','neumayer2007gendered','muttarak2014education','hasan2012transferability','nadimi2025earthquake','dixit2012modeling','robinson2010route','bian2019modeling','rambha2021modeling','lim2019flood','hasan2011behavioral','sadri2017modeling','kuligowski2022modeling','ahmed2020modeling','diaz2023impacts','wong2023understanding','golshani2020modeling','sun2024predicting','elhami2023review','toledo2018analysis','wang2021incorporating','wolshon2005review','greer2023household','alawadi2020determinants'],
+  'SC': ['baker1991hurricane','dash2007evacuation','perry1979incentives','perry2005disaster','mawson2005understanding','quarantelli1975panic','ersing2020geophysical','noltenius2008capturing','chakraborty2005population','jumadi2018modelling','whitehead2000heading','horney2010individual','riad1999predicting','xie2023study','kinateder2015risk','fothergill1996gender','ayeb2019will','blendon2007public','bolin1998gender','bateman2002gender','elliott2006race','wang2021incorporating','li2017grouping','vorst2010evacuation','harris2022agent','lindell2000household','jamshed2019assessing','nakanishi2019investigating','neumayer2007gendered','huang2016leaves','ling2021role','muthohar2020analysing','intini2019traffic','zhang2024modeling','jiang2021social','lim2019flood','hasan2011behavioral','sadri2017modeling','urata2021dynamics','ahmed2020modeling','diaz2023impacts','wong2023understanding','elhami2023review','chen2021tsunami','toledo2018analysis','elejalde2025use','roy2021modeling','syamsidik2013tsunami','sadri2017role','reyes2025novel','mclennan2019should','alawadi2020determinants','rashid2025understanding','ricchetti2013social','wu2024evacuate','jin2025exploring','wambura2025wildfire'],
+  'PE': ['baker1991hurricane','dash2007evacuation','perry1979incentives','dow2000public','lazo2015factors','wolshon2002planning','ersing2020geophysical','jumadi2018modelling','lindell2011logistics','yang2016modeling','kim2015confidence','ayeb2019will','walch2018evacuation','kinateder2015risk','golshani2019evacuation','demuth2016effects','wu2012logistics','huang2016leaves','grajdura2021awareness','hasan2012transferability','nadimi2025earthquake','ling2021role','sadri2014analysis','mahittikul2024examining','robinson2010route','bian2019modeling','rambha2021modeling','wong2020revealed','hasan2011behavioral','kuligowski2022modeling','mapa2026analyzing','dixit2012modeling','sun2024predicting','hall2017awareness','wambura2025wildfire','elhami2023review','alawadi2022determinants','chen2021tsunami','toledo2018analysis','wang2021incorporating','chen2022evacuation','demiroluk2016feature','wolshon2005review','syamsidik2013tsunami','greer2023household','mclennan2019should','alawadi2020determinants','bernardini2016towards']
+};
+
+function renderTags(papers) {
+  return '<div class="tags">' + papers.map(p =>
+    `<span class="tag ${newPapers.has(p) ? 'new' : ''}">${p}</span>`
+  ).join('') + '</div><p class="legend-note">Blue = newly added papers</p>';
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+function makeDonut(id, labels, data, colors, infoId, dataMap) {
+  const ctx = document.getElementById(id);
+  if (!ctx) return;
+  const chart = new Chart(ctx, {
+    type: 'doughnut',
+    data: {
+      labels,
+      datasets: [{ data, backgroundColor: colors, borderWidth: 2, borderColor: '#fff', hoverOffset: 10 }]
+    },
+    options: {
+      responsive: true, maintainAspectRatio: false,
+      plugins: {
+        legend: { display: false },
+        tooltip: { callbacks: { label: c => ` ${c.label}: ${c.parsed}%` } }
+      },
+      onClick(evt) {
+        const pts = chart.getElementsAtEventForMode(evt, 'nearest', { intersect: true }, true);
+        if (!pts.length) return;
+        const label = labels[pts[0].index];
+        const papers = dataMap[label] || [];
+        document.getElementById(infoId).innerHTML =
+          `<div class="info-title">${label} — ${papers.length} papers</div>${renderTags(papers)}`;
+      }
+    }
+  });
+}
+
+makeDonut('chartCountries',
+  ['USA','General','Japan','China','Others'],
+  [61,19,6,3,11],
+  ['#378ADD','#888780','#1D9E75','#D85A30','#D4537E'],
+  'info-countries', countryData);
+
+makeDonut('chartDisasters',
+  ['Hurricane','General','Wildfire/Fire','Earthquake','Tsunami','Flood','Others'],
+  [47,16,12,6,6,5,8],
+  ['#378ADD','#888780','#EF9F27','#1D9E75','#7F77DD','#D4537E','#D85A30'],
+  'info-disasters', disasterData);
+
+makeDonut('chartFactors',
+  ['Demog.','EC','PPC','FC','SC','PE','Others'],
+  [15,13,13,11,11,9,28],
+  ['#378ADD','#1D9E75','#7F77DD','#EF9F27','#D4537E','#D85A30','#888780'],
+  'info-factors', factorData);
+</script>
+</body>
+</html>
